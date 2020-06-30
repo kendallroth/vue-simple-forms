@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-06-29
+### Added
+- New `FormLeaveGuardMixin` to prevent users from leaving routes with unsaved changes
+  - **Does require additional handling (via dialog, etc)**
+- New `FormCreateMixin` based on the existing `createForm` function
+- Customization options to the form creation function/mixin
+  - Can specify custom `flags` and whether the `changed` flag should be calculated (performance)
+
+### Changed
+-  Changed `createForm` to a secondary export (instead prefer `FormCreateMixin`)
+
 ## [0.1.0] - 2020-06-29
 ### Added
 - Core `createForm` function to create reactive Vue form data/flags
