@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2020-06-29
+## [0.2.1] - 2020-06-30
+### Fixed
+- Reset form data when leaving route in `FormLeaveGuardMixin`
+
+## [0.2.0] - 2020-06-30
 ### Added
 - New `FormLeaveGuardMixin` to prevent users from leaving routes with unsaved changes
   - **Does require additional handling (via dialog, etc)**

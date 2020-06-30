@@ -69,6 +69,9 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
         this[callbackKey] = null;
 
         if (shouldContinue) {
+          // Reset the form before leaving (otherwise it sometimes retains data)
+          formKeys.forEach((key) => resetForm.call(this, key));
+
           return next();
         }
       };
@@ -82,13 +85,25 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
 
 /**
  * Check whether a form has any unsaved changes
- * @param {string} formKey - Form state key
+ * @param  {string}  formKey - Form state key
+ * @return {boolean}         - Whether form is clean
  */
 function checkFormClean(formKey) {
   const form = this[formKey];
   if (!form) return true;
 
   return !form.flags.changed && !form.flags.submitting;
+}
+
+/**
+ * Reset a form
+ * @param {string} formKey - Form state key
+ */
+function resetForm(formKey) {
+  const form = this[formKey];
+  if (!form) return;
+
+  form.reset();
 }
 
 export { FormLeaveGuardMixin };
