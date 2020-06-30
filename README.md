@@ -104,6 +104,8 @@ const vm = new Vue({
     FormLeaveGuardMixin("testForm", {
       activeKey: "isLeavingForm",
       callbackKey: "formLeaveCallback",
+      onlyPrevent: false, // Would render "activeKey" useless
+      // onPrevent: (callback) => Vuex.commit("SHOW_ROUTE_LEAVE", { callback })
     }),
   ],
   // mixins: [FormLeaveGuardMixin(["testForm", "anotherForm")],
@@ -125,12 +127,14 @@ const vm = new Vue({
 
 `FormLeaveGuardMixin` accepts several arguments to configure the form.
 
-| Property              | Type              | Default             | Description                                          |
-| --------------------- | ----------------- | ------------------- | ---------------------------------------------------- |
-| `formNames`           | `string|string[]` |                     | Form `data` key name                                 |
-| `options`             | `Object`          | `{}`                | Form configuration options                           |
-| `options.activeKey`   | `string`          | `isLeaveFormActive` | Key name to indicate when form leave guard is active |
-| `options.callbackKey` | `string`          | `formLeaveCallback` | Key name for route leave confirmation callback       |
+| Property                      | Type              | Default             | Description                                                   |
+| ----------------------------- | ----------------- | ------------------- | ------------------------------------------------------------- |
+| `formNames`                   | `string|string[]` |                     | Form `data` key name                                          |
+| `options`                     | `Object`          | `{}`                | Form configuration options                                    |
+| `options.activeKey`           | `string`          | `isLeaveFormActive` | Key name to indicate when form leave guard is active          |
+| `options.callbackKey`         | `string`          | `formLeaveCallback` | Key name for route leave confirmation callback                |
+| `options.onlyPrevent`         | `boolean`         | `false`             | Whether to only prevent leaving form ("activeKey" is useless) |
+| `options.onPrevent(callback)` | `function`        | `() => {}`          | Custom prevention handler (ie. for handling with Vuex, etc)   |
 
 ### Mixin Data
 

@@ -4,11 +4,15 @@
  * @param {Object}          options             - Guard configuration options
  * @param {string}          options.activeKey   - Form leave active state key
  * @param {string}          options.callbackKey - Callback method key
+ * @param {boolean}         options.onlyPrevent - Only prevent leaving route (no "active" state)
+ * @param {function}        options.onPrevent   - Prevention handler (for custom handling)
  */
 const FormLeaveGuardMixin = (formKeys, options = {}) => {
   const {
     activeKey = "isLeaveFormActive",
     callbackKey = "formLeaveCallback",
+    onlyPrevent = false,
+    onPrevent = () => {},
   } = options;
 
   return {
@@ -23,7 +27,7 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
           return Boolean(this[callbackKey]);
         },
         set(val) {
-          // Only set to inactive (never active)!
+          // Can only set to inactive, since setting to "active" requires a "next()" callback!
           if (!val) {
             // Must wait until next tick to avoid clearing callback before calling
             this.$nextTick(() => {
@@ -47,17 +51,31 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
         return next();
       }
 
+      // The "onlyPrevent" option only prevents leaving with unsaved data,
+      //   and does not manage any additional "active" status.
+      if (onlyPrevent) {
+        // Call the prevention handler with no callback (ie. no "next()")
+        onPrevent && onPrevent();
+        return;
+      }
+
       /**
-       * Callback for route leave confirmation dialog
-       * @param {bool} shouldContinue - Whether to leave route
+       * Callback to determine whether leaving form is allowed
+       * @param {boolean} shouldContinue - Whether to leave the form
        */
-      this[callbackKey] = (shouldContinue = false) => {
+      const callback = (shouldContinue = false) => {
+        // Prevent calling twice (from here and "onPrevent" handler)
+        if (!this[callbackKey]) return;
         this[callbackKey] = null;
 
         if (shouldContinue) {
           return next();
         }
       };
+
+      // Set the callback and pass the reference to the "onPrevent" callback
+      this[callbackKey] = callback;
+      onPrevent(callback);
     },
   };
 };
