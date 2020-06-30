@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2020-06-29
+## [0.1.0] - 2020-06-29
 ### Added
 - Core `createForm` function to create reactive Vue form data/flags
 - Basic project (dummy) tests
