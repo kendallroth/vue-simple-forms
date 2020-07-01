@@ -48,6 +48,7 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
         );
         if (areAllClean) return next();
       } else {
+        /* istanbul ignore next - Uncommon case */
         return next();
       }
 
@@ -70,7 +71,11 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
 
         if (shouldContinue) {
           // Reset the form before leaving (otherwise it sometimes retains data)
-          formKeys.forEach((key) => resetForm.call(this, key));
+          if (Array.isArray(formKeys)) {
+            formKeys.forEach((key) => resetForm.call(this, key));
+          } else {
+            resetForm.call(this, formKeys);
+          }
 
           return next();
         }
@@ -78,7 +83,7 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
 
       // Set the callback and pass the reference to the "onPrevent" callback
       this[callbackKey] = callback;
-      onPrevent(callback);
+      onPrevent && onPrevent(callback);
     },
   };
 };
