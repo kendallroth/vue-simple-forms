@@ -9,7 +9,16 @@ module.exports = {
       plugins: ["add-module-exports"],
     },
     test: {
-      presets: ["@babel/preset-env"],
+      presets: [
+        [
+          "@babel/preset-env",
+          {
+            targets: {
+              node: "current",
+            },
+          },
+        ],
+      ],
       plugins: ["add-module-exports"],
     },
   },

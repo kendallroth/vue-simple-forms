@@ -6,6 +6,9 @@ import { createForm, FormCreateMixin } from "../src";
 
 describe("Form Create Mixin", () => {
   let wrapper = null;
+  const Component = Vue.component("formComponent", {
+    template: "<div />",
+  });
 
   const formName = "form";
   const fields = {
@@ -22,10 +25,6 @@ describe("Form Create Mixin", () => {
 
   // Setup the component with mixin before each test
   const beforeHandler = () => {
-    const Component = Vue.component("formComponent", {
-      template: "<div />",
-    });
-
     wrapper = shallowMount(Component, {
       mixins: [
         // NOTE: Must spread setup values to avoid mutating by reference!
@@ -34,11 +33,12 @@ describe("Form Create Mixin", () => {
     });
   };
 
-  beforeEach(beforeHandler);
-
-  afterEach(() => {
+  const afterHandler = () => {
     wrapper.destroy();
-  });
+  };
+
+  beforeEach(beforeHandler);
+  afterEach(afterHandler);
 
   it("should run mixin in component", () => {
     // Should import successfully
@@ -64,7 +64,8 @@ describe("Form Create Mixin", () => {
   });
 
   describe("should handle form data methods", () => {
-    beforeAll(beforeHandler);
+    beforeEach(beforeHandler);
+    afterEach(afterHandler);
 
     it("'should get form values", () => {
       expect(wrapper.vm[formName].getValues()).toEqual(fields);
@@ -96,7 +97,8 @@ describe("Form Create Mixin", () => {
   });
 
   describe("should handle form flag methods", () => {
-    beforeAll(beforeHandler);
+    beforeEach(beforeHandler);
+    afterEach(afterHandler);
 
     it("should not set invalid flags", () => {
       wrapper.vm[formName].setFlag("locked", true);
@@ -121,7 +123,8 @@ describe("Form Create Mixin", () => {
   });
 
   describe("should handle form computed flags", () => {
-    beforeAll(beforeHandler);
+    beforeEach(beforeHandler);
+    afterEach(afterHandler);
 
     it("should calculate computed 'changed' flag", () => {
       // Should start unchanged
@@ -147,18 +150,16 @@ describe("Form Create Mixin", () => {
     let wrapperStatic = null;
 
     beforeEach(() => {
-      // NOTE: Create separate Vue instance to test these options (behavior changes)
-      const ComponentStatic = Vue.component("staticFormComponent", {
-        template: "<div />",
-      });
-
       const options = { calculateChanged: false, flags: { locked: true } };
-      wrapperStatic = shallowMount(ComponentStatic, {
+      wrapperStatic = shallowMount(Component, {
         mixins: [
           // NOTE: Must spread setup values to avoid mutating by reference!
           FormCreateMixin(formName, { ...fields }, options),
         ],
       });
+    });
+    afterEach(() => {
+      wrapperStatic.destroy();
     });
 
     it("should use custom flags", () => {
@@ -205,7 +206,6 @@ describe("Form Create Function", () => {
   };
 
   beforeEach(beforeHandler);
-
   afterEach(() => {
     wrapper.destroy();
   });
