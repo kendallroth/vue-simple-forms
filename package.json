@@ -6,10 +6,11 @@
   "scripts": {
     "clean": "rimraf lib",
     "format": "prettier --write {src,test}/**/*.js",
-    "test": "npm run lint && jest --verbose",
-    "test:cover": "npm test -- --coverage",
+    "test": "npm run lint && npm run test:only",
+    "test:cover": "npm run test:only -- --coverage",
     "test:prod": "cross-env BABEL_ENV=production npm run test",
-    "test:watch": "npm test -- --watch",
+    "test:only": "jest --verbose",
+    "test:watch": "npm run test:only -- --watch",
     "lint": "eslint src test",
     "build": "cross-env BABEL_ENV=production babel src --out-dir lib",
     "prepublish": "npm run clean && npm run test && npm run build"
