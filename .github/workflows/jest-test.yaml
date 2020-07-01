@@ -8,7 +8,7 @@ on:
     branches: master
 
 jobs:
-  test:
+  jest-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
