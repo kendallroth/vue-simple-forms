@@ -77,9 +77,14 @@ describe("Form Create Mixin", () => {
     });
 
     it("should update form values (and initial)", () => {
-      wrapper.vm[formName].setValues({ ...fieldChanges }, true);
+      // Should set form values and update initial values
+      wrapper.vm[formName].setValues({ ...fieldChanges });
       expect(wrapper.vm[formName].getValues()).toEqual(updatedFields);
       expect(wrapper.vm[formName]._initial).toEqual(updatedFields);
+
+      // Should use new initial values in reset
+      wrapper.vm[formName].reset();
+      expect(wrapper.vm[formName].getValues()).toEqual(updatedFields);
     });
 
     it("should reset form values", () => {
