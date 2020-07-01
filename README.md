@@ -1,5 +1,7 @@
 # Vue Forms
 
+![](https://github.com/kendallroth/vue-simple-forms/workflows/Jest%20Test/badge.svg)
+
 Simple Vue form state management library (no validation, etc).
 
 - [`FormCreateMixin`](#formcreatemixin)
