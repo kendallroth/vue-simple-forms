@@ -37,7 +37,10 @@ const createForm = (name, fields, options = {}) => {
        * @param {boolean} value - Form flag value
        */
       setFlag(flag, value) {
-        this.flags[flag] = value;
+        // Only set flags that exist or are custom!
+        if (this.flags[flag] === undefined) return;
+
+        this.flags[flag] = Boolean(value);
       },
       /**
        * Set whether the form is loading

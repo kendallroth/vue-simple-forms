@@ -2,7 +2,7 @@ module.exports = {
   parser: "babel-eslint",
   extends: "eslint:recommended",
   env: {
-    mocha: true,
+    jest: true,
     node: true,
   },
   rules: {
