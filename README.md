@@ -7,6 +7,10 @@ Simple Vue form state management library (no validation, etc).
 - [`FormCreateMixin`](#formcreatemixin)
 - [`FormLeaveGuardMixin`](#formleaveguardmixin)
 
+```sh
+npm install @kendallroth/vue-simple-forms --save
+```
+
 ## Features
 
 - Create reactive Vue data for forms
@@ -148,6 +152,23 @@ The `FormLeaveGuardMixin` provides a computed property to control a confirmation
 | `formLeaveCallback(shouldLeave)`\* | Confirmation callback (from dialog, etc)           |
 
 > **NOTE:** Since these API names can be configured, use the appropriate names from the mixin constructor.
+
+## Development
+
+Plugin development can be aided by installing this package locally (through file path) in another project.
+
+```sh
+cd project-with-dependency
+
+# Relative path depends on location from "depending" project
+npm install ../vue-simple-forms
+```
+
+This project can be started and will automatically rebuild on file changes:
+
+```sh
+npm run build:dev
+```
 
 ## Miscellaneous
 
