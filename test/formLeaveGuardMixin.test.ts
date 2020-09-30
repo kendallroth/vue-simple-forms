@@ -85,6 +85,8 @@ describe("Form Leave Guard Mixin", () => {
 
   it("should handle leaving clean forms (multiple)", () => {
     const wrapperMulti = mountComponent([formName]);
+    // TODO: Possibly fix by adding 'beforeRouteLeave' to the vm options...
+    // @ts-ignore
     const beforeRouteLeaveMulti = wrapperMulti.vm.$options.beforeRouteLeave;
     beforeRouteLeaveMulti.call(wrapperMulti.vm, "toObj", "fromObj", nextFn);
 
@@ -103,7 +105,7 @@ describe("Form Leave Guard Mixin", () => {
       beforeHandler();
 
       // Make changes to form (to trigger "changed" flag)
-      wrapper.vm[formName].setValues({ ...fieldChanges }, false);
+      wrapper.vm[formName].setValues({ ...fieldChanges });
       beforeRouteLeave.call(wrapper.vm, "toObj", "fromObj", nextFn);
     });
     afterEach(afterHandler);
@@ -145,8 +147,10 @@ describe("Form Leave Guard Mixin", () => {
 
     it("should leave dirty forms (multiple) after confirmation", () => {
       const wrapperMulti = mountComponent([formName]);
+      // TODO: Possibly fix by adding 'beforeRouteLeave' to the vm options...
+      // @ts-ignore
       const beforeRouteLeaveMulti = wrapperMulti.vm.$options.beforeRouteLeave;
-      wrapperMulti.vm[formName].setValues({ ...fieldChanges }, false);
+      wrapperMulti.vm[formName].setValues({ ...fieldChanges });
       beforeRouteLeaveMulti.call(wrapperMulti.vm, "toObj", "fromObj", nextFn);
       wrapperMulti.vm[callbackKey](true);
 
@@ -163,9 +167,11 @@ describe("Form Leave Guard Mixin", () => {
     const wrapperPrevent = mountComponent(formName, {
       onlyPrevent: true,
     });
+    // TODO: Possibly fix by adding 'beforeRouteLeave' to the vm options...
+    // @ts-ignore
     const beforeRouteLeavePrevent = wrapperPrevent.vm.$options.beforeRouteLeave;
 
-    wrapperPrevent.vm[formName].setValues({ ...fieldChanges }, false);
+    wrapperPrevent.vm[formName].setValues({ ...fieldChanges });
     beforeRouteLeavePrevent.call(wrapperPrevent.vm, "toObj", "fromObj", nextFn);
 
     // Should not call "next" when only preventing leaving dirty form

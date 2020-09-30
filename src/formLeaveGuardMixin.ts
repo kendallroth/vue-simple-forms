@@ -1,3 +1,17 @@
+import { Form } from "./formCreateMixin";
+
+export interface FormMixin {
+  // Dynamic form name
+  [name: string]: Form;
+}
+
+export interface FormLeaveOptions {
+  activeKey?: string;
+  callbackKey?: string;
+  onlyPrevent?: boolean;
+  onPrevent?: (callback?: () => void) => void;
+}
+
 /**
  * Prevent leaving a route with unsaved changes
  * @param {string|string[]} formKeys            - Form state key(s)
@@ -7,13 +21,16 @@
  * @param {boolean}         options.onlyPrevent - Only prevent leaving route (no "active" state)
  * @param {function}        options.onPrevent   - Prevention handler (for custom handling)
  */
-const FormLeaveGuardMixin = (formKeys, options = {}) => {
+const FormLeaveGuardMixin = (
+  formKeys: string[],
+  options?: FormLeaveOptions
+): any => {
   const {
     activeKey = "isLeaveFormActive",
     callbackKey = "formLeaveCallback",
     onlyPrevent = false,
-    onPrevent = () => {},
-  } = options;
+    onPrevent,
+  } = options || {};
 
   return {
     data() {
@@ -23,28 +40,32 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
     },
     computed: {
       [activeKey]: {
-        get() {
+        get(): boolean {
+          // @ts-ignore
           return Boolean(this[callbackKey]);
         },
-        set(val) {
+        set(val: boolean): void {
           // Can only set to inactive, since setting to "active" requires a "next()" callback!
           if (!val) {
             // Must wait until next tick to avoid clearing callback before calling
+            // @ts-ignore
             this.$nextTick(() => {
+              // @ts-ignore
               this[callbackKey] = null;
             });
           }
         },
       },
     },
-    beforeRouteLeave(to, from, next) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    beforeRouteLeave(to: any, from: any, next: () => void) {
       // Check all supplied forms for unsaved changes
       if (typeof formKeys === "string") {
-        const isClean = checkFormClean.call(this, formKeys);
+        const isClean = checkFormClean(this, formKeys);
         if (isClean) return next();
       } else if (Array.isArray(formKeys)) {
         const areAllClean = formKeys.every((key) =>
-          checkFormClean.call(this, key)
+          checkFormClean(this, key)
         );
         if (areAllClean) return next();
       } else {
@@ -72,9 +93,9 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
         if (shouldContinue) {
           // Reset the form before leaving (otherwise it sometimes retains data)
           if (Array.isArray(formKeys)) {
-            formKeys.forEach((key) => resetForm.call(this, key));
+            formKeys.forEach((key) => resetForm(this, key));
           } else {
-            resetForm.call(this, formKeys);
+            resetForm(this, formKeys);
           }
 
           return next();
@@ -90,11 +111,12 @@ const FormLeaveGuardMixin = (formKeys, options = {}) => {
 
 /**
  * Check whether a form has any unsaved changes
+ * @param  {Object}  that    - Calling 'this' context
  * @param  {string}  formKey - Form state key
  * @return {boolean}         - Whether form is clean
  */
-function checkFormClean(formKey) {
-  const form = this[formKey];
+function checkFormClean(that: FormMixin, formKey: string) {
+  const form = that[formKey];
   if (!form) return true;
 
   return !form.flags.changed && !form.flags.submitting;
@@ -102,10 +124,11 @@ function checkFormClean(formKey) {
 
 /**
  * Reset a form
+ * @param {Object} that    - Calling 'this' context
  * @param {string} formKey - Form state key
  */
-function resetForm(formKey) {
-  const form = this[formKey];
+function resetForm(that: FormMixin, formKey: string) {
+  const form = that[formKey];
   if (!form) return;
 
   form.reset();

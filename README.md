@@ -38,7 +38,7 @@ vm.data.testForm.setLoading(true);
 vm.data.testForm.setSubmitting(true);
 ```
 
-> **NOTE:** The `createForm` function is an alternative to the `FormCreateMixin` (which is preferred).
+> **NOTE:** The `createForm` function is an alternative to the `FormCreateMixin` (recommended with TypeScript).
 
 ```js
 // Alternative approach
@@ -71,17 +71,18 @@ Both `FormCreateMixin` and `createForm` accept several arguments to configure th
 
 The `form` object (name specified by mixin options) provides a simple API, particularly the field values and form flags. There are several additional utility methods to control the flags.
 
-| Property                               | Description                                            |
-| -------------------------------------- | ------------------------------------------------------ |
-| `_initial`                             | _Initial field values_                                 |
-| `flags`                                | Form state flags                                       |
-| `fields`                               | Form field values                                      |
-| `getValues()`                          | Get form values                                        |
-| `setFlag(flag, value)`                 | Set a form flag (**only use for custom `flags`!**)     |
-| `setLoading(isLoading)`                | Set the loading flag                                   |
-| `setSubmitting(isSubmitting)`          | Set the submitting flag                                |
-| `setValues(values, setInitial = true)` | Set the form values (optionally update initial values) |
-| `reset()`                              | Reset the form to initial values                       |
+| Property                                | Description                                            |
+| --------------------------------------- | ------------------------------------------------------ |
+| `_initial`                              | _Initial field values_                                 |
+| `flags`                                 | Form state flags                                       |
+| `fields`                                | Form field values                                      |
+| `getValues()`                           | Get form values                                        |
+| `setFlag(flag, value)`                  | Set a form flag (**only use for custom `flags`!**)     |
+| `setInitial(values)`                    | Set the initial form values                            |
+| `setLoading(isLoading)`                 | Set the loading flag                                   |
+| `setSubmitting(isSubmitting)`           | Set the submitting flag                                |
+| `setValues(values, setInitial = false)` | Set the form values (update initial values by default) |
+| `reset()`                               | Reset the form to initial values                       |
 
 > **NOTE:** Included form `flags` are handled internally and should not be modified with `setFlags()` method!
 

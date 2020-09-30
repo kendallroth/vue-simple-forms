@@ -72,14 +72,14 @@ describe("Form Create Mixin", () => {
     });
 
     it("should update form values (but not initial)", () => {
-      wrapper.vm[formName].setValues({ ...fieldChanges }, false);
+      wrapper.vm[formName].setValues({ ...fieldChanges });
       expect(wrapper.vm[formName].getValues()).toEqual(updatedFields);
       expect(wrapper.vm[formName]._initial).toEqual(fields);
     });
 
     it("should update form values (and initial)", () => {
       // Should set form values and update initial values
-      wrapper.vm[formName].setValues({ ...fieldChanges });
+      wrapper.vm[formName].setValues({ ...fieldChanges }, true);
       expect(wrapper.vm[formName].getValues()).toEqual(updatedFields);
       expect(wrapper.vm[formName]._initial).toEqual(updatedFields);
 
@@ -89,7 +89,7 @@ describe("Form Create Mixin", () => {
     });
 
     it("should reset form values", () => {
-      wrapper.vm[formName].setValues({ ...fieldChanges }, false);
+      wrapper.vm[formName].setValues({ ...fieldChanges });
       expect(wrapper.vm[formName].getValues()).toEqual(updatedFields);
       wrapper.vm[formName].reset();
       expect(wrapper.vm[formName].getValues()).toEqual(fields);
@@ -199,7 +199,7 @@ describe("Form Create Function", () => {
       // NOTE: Must spread setup values to avoid mutating by reference!
       data() {
         return {
-          ...createForm(formName, { ...fields }),
+          [formName]: createForm({ ...fields }),
         };
       },
     });

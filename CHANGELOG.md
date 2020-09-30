@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Breaking
+- Changed the default behaviour of the `setValues` form function (now will not set initial values by default)
+  - _This change was made to align with developer expectations (behaviour moved to `setInitial`)_
+
+### Added
+- Overhauled package to use [TypeScript](https://typescriptlang.org)!
+- `setInitial` form function to set a form's initial (and current) values (similar to old behaviour of `setValues`)
 
 ## [0.2.3] - 2020-09-30
 ### Added
