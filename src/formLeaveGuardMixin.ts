@@ -1,3 +1,7 @@
+/**
+ * NOTE: This mixin is not typed when imported (since it is dynamic)!
+ */
+
 import { Form } from "./formCreateMixin";
 
 export interface FormMixin {
