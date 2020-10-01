@@ -1,8 +1,9 @@
 /**
- * NOTE: This mixin is not typed when imported (since it is dynamic)!
+ * NOTE: Use 'FormGuardMixin' mixin with TypeScript instead (this mixin is not typed)!
  */
 
-import { Form } from "./formCreateMixin";
+// Types
+import { Form } from "./createForm";
 
 export interface FormMixin {
   // Dynamic form name
@@ -28,7 +29,11 @@ export interface FormLeaveOptions {
 const FormLeaveGuardMixin = (
   formKeys: string[],
   options?: FormLeaveOptions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any => {
+  // eslint-disable-next-line no-console
+  console.warn("'FormLeaveGuardMixin' is deprecated (no type support) - use 'FormGuardMixin' instead!");
+
   const {
     activeKey = "isLeaveFormActive",
     callbackKey = "formLeaveCallback",

@@ -1,7 +1,12 @@
+/**
+ * NOTE: This component requires a 'data' property to be set in order
+ *         to know which forms to check (guardedForms[]).
+ */
+
 import { Component, Vue } from "vue-property-decorator";
 
 // Types
-import { Form } from "./formCreateMixin";
+import { Form } from "./createForm";
 
 @Component
 export default class FormGuardMixin extends Vue {

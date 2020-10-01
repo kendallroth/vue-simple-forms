@@ -4,8 +4,9 @@
 
 Simple Vue form state management library (no validation, etc).
 
-- [`FormCreateMixin`](#formcreatemixin)
-- [`FormLeaveGuardMixin`](#formleaveguardmixin)
+- [`FormCreateMixin` / `createForm()`](#formcreatemixin)
+- [`FormGuardMixin`](#formguardmixin)
+- [~~`FormLeaveGuardMixin`~~](#deprecated-formleaveguardmixin) (_deprecated_)
 
 ```sh
 npm install @kendallroth/vue-simple-forms --save
@@ -18,6 +19,8 @@ npm install @kendallroth/vue-simple-forms --save
 - Help prevent leaving a route with unsaved changes
 
 ## `FormCreateMixin`
+
+> **NOTE:** This mixin is not fully typed! When using TypeScript, use the underlying `createForm` helper to create fully typed forms!
 
 ### Usage
 
@@ -41,14 +44,14 @@ vm.data.testForm.setSubmitting(true);
 > **NOTE:** The `createForm` function is an alternative to the `FormCreateMixin` (recommended with TypeScript).
 
 ```js
-// Alternative approach
+// Alternative approach (TypeScript, etc)
 import { createForm } from "@kendallroth/vue-simple-forms";
 
 const fields = { email: "", password: "" };
 
 const vm = new Vue({
   data() {
-    ...createForm("testForm", fields, { calculateChanged: false }),
+    testForm: createForm(fields, { calculateChanged: false }),
   },
 });
 ```
@@ -57,11 +60,11 @@ const vm = new Vue({
 
 ### Config
 
-Both `FormCreateMixin` and `createForm` accept several arguments to configure the form.
+Both `createForm` and `FormCreateMixin` accept several arguments to configure the form.
 
 | Property                   | Type      | Default | Description                                            |
 | -------------------------- | --------- | ------- | ------------------------------------------------------ |
-| `name`                     | `string`  |         | Form `data` key name                                   |
+| `name`\*                   | `string`  |         | Form `data` key name **(only `FormCreateMixin`)**      |
 | `fields`                   | `Object`  |         | Form fields and initial values                         |
 | `options`                  | `Object`  |         | Form configuration options                             |
 | `options.calculateChanged` | `boolean` | `true`  | Whether `changed` flag is calculated (performance)     |
@@ -97,7 +100,56 @@ The form flags are computed from the form state and should not be modified direc
 | `loading`    | Whether form is loading                                           | `setLoading()`    |
 | `submitting` | Whether form is submitting                                        | `setSubmitting()` |
 
-## `FormLeaveGuardMixin`
+## `FormGuardMixin`
+
+### Usage
+
+The `FormLeaveGuardMixin` provides helpers to prevent leaving a form (managed by `createForm`) with unsaved data. These helpers can be utilized by the component to allow the user to handle the route change or cancellation based on the provided properties. The mixin checks the `changed` flag of a form (or forms) created by the `createForm`.
+
+```js
+import { createForm, FormGuardMixin } from "@kendallroth/vue-simple-forms";
+
+const vm = new Vue({
+  data() {
+    sampleForm: createForm(...),
+    formGuards: [this.sampleForm],
+  },
+  mixins: [FormLeaveGuardMixin],
+  template: `
+    <template>
+      <ConfirmDialog
+        v-if="isFormGuardActive"
+        text="Are you sure? There are unsaved changes!"
+        @confirm="onFormLeave(true)"
+        @cancel="onFormLeave(false)"
+      />
+    </template>
+  `,
+});
+```
+
+### API
+
+### Config
+
+`FormGuardMixin` accepts a configuration `data` variable.
+
+| Property     | Type     | Description                          |
+| ------------ | -------- | ------------------------------------ |
+| `formGuards` | `Form[]` | Form objects created by `createForm` |
+
+### Mixin Data
+
+The `FormGuardMixin` provides a computed property to control a confirmation dialog (or other form) and a callback to handle leaving or remaining at the form.
+
+| Property                     | Description                                        |
+| ---------------------------- | -------------------------------------------------- |
+| `isFormGuardActive`          | Whether the leave route protection is active/shown |
+| `onFormLeave(shouldLeave)`   | Confirmation callback (from dialog, etc)           |
+
+## [DEPRECATED] `FormLeaveGuardMixin`
+
+> **NOTE:** This has been deprecated in favour of the fully typed `FormGuardMixin`.
 
 ### Usage
 
