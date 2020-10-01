@@ -13,8 +13,8 @@
     "test:only": "jest --verbose",
     "test:watch": "npm run test:only -- --watch",
     "lint": "eslint src test",
-    "build": "cross-env NODE_ENV=\"production\" tsc",
-    "build:dev": "tsc --watch",
+    "build": "cross-env NODE_ENV=\"production\" tsc -p tsconfig.build.json",
+    "build:dev": "tsc -p tsconfig.build.json --watch",
     "prepublish": "npm run clean && npm run test && npm run build"
   },
   "files": [
