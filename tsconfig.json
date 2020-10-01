@@ -9,10 +9,6 @@
     "strict": true,
   },
   "baseUrl": "./",
-  "paths": {
-    "@typings": ["src/types"],
-    "@typings/*": ["src/types/*"],
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["lib", "node_modules", "test"]
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["lib", "node_modules"]
 }

@@ -9,10 +9,8 @@ import { Component, Vue } from "vue-property-decorator";
 import { Form } from "./createForm";
 
 @Component
-export default class FormGuardMixin extends Vue {
+export class FormGuardMixin extends Vue {
   // TODO: Possibly configure via router 'props'?
-
-  isFormGuardActive = true;
 
   formLeaveCallback: ((leave: boolean) => void) | null = null;
 
@@ -20,11 +18,11 @@ export default class FormGuardMixin extends Vue {
     return this.$data.guardedForms || [];
   }
 
-  get isLeaveFormActive(): boolean {
+  get isFormGuardActive(): boolean {
     return Boolean(this.formLeaveCallback);
   }
 
-  set isLeaveFormActive(val: boolean) {
+  set isFormGuardActive(val: boolean) {
     // Can only set to inactive, since setting to "active" requires a "next()" callback!
     if (!val) {
       // Must wait until next tick to avoid clearing callback before calling
@@ -88,7 +86,7 @@ function checkForms(forms: Form[]): boolean {
 
   return forms.every((form) => {
     if (!form || !form.flags) return true;
-    return (!form.flags.changed && !form.flags.submitting);
+    return !form.flags.changed && !form.flags.submitting;
   });
 }
 
@@ -101,7 +99,7 @@ function resetForms(forms: Form[]): void {
 
   forms.forEach((form) => {
     if (!form || !form.reset) return;
-    form.reset()
+    form.reset();
   });
 }
 

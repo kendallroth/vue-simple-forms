@@ -5,14 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-### Breaking
-- **Deprecated** the `FormLeaveGuardMixin` component in favour of `FormGuardMixin` (fully typed)
+### Removed
+- Removed the `FormCreateMixin` (replaced with typed `createForm` function)
+  - _The `FormCreaetMixin` (not truly a mixin...) did not work with TypeScript_
+  - _The old mixin simply called this function anyway..._
+- Removed the `FormLeaveGuardMixin` (replaced with typed `FormGuardMixin`)
   - _The `FormLeaveGuardMixin` (not truly a mixin...) did not work with TypeScript_
   - _There was no need for customizing the leave guard to the extend provided_
-- Changed the default behaviour of the `setValues` form function (now will not set initial values by default)
-  - _This change was made to align with developer expectations (behaviour moved to `setInitial`)_
 - Removed the form key/name from the `createForm` function API
   - _This was an unnecessary step that caused more internal work for no gain (simply assign to data)_
+
+### Changed
+- Changed the default behaviour of the `setValues` form function (now will not set initial values by default)
+  - _This change was made to align with developer expectations (behaviour moved to `setInitial`)_
 
 ### Added
 - Overhauled package to use [TypeScript](https://typescriptlang.org)!

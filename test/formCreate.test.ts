@@ -1,11 +1,12 @@
 import Vue from "vue";
-import { shallowMount } from "@vue/test-utils";
+import { shallowMount, Wrapper } from "@vue/test-utils";
 
 // Utilities
-import { createForm, FormCreateMixin } from "../src";
+import { createForm } from "../src";
 
 describe("Form Create Mixin", () => {
-  let wrapper = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let wrapper: Wrapper<Vue & { [key: string]: any }>;
   const Component = Vue.component("formComponent", {
     template: "<div />",
   });
@@ -23,13 +24,15 @@ describe("Form Create Mixin", () => {
     ...fieldChanges,
   };
 
-  // Setup the component with mixin before each test
+  // Setup the component data before each test
   const beforeHandler = () => {
     wrapper = shallowMount(Component, {
-      mixins: [
-        // NOTE: Must spread setup values to avoid mutating by reference!
-        FormCreateMixin(formName, { ...fields }),
-      ],
+      // NOTE: Must spread setup values to avoid mutating by reference!
+      data() {
+        return {
+          [formName]: createForm({ ...fields }),
+        };
+      },
     });
   };
 
@@ -40,17 +43,17 @@ describe("Form Create Mixin", () => {
   beforeEach(beforeHandler);
   afterEach(afterHandler);
 
-  it("should run mixin in component", () => {
+  it("should run function in component", () => {
     // Should import successfully
-    expect(FormCreateMixin).toBeTruthy();
+    expect(createForm).toBeTruthy();
     // Should have form data key from mixin options
     expect(wrapper.vm).toHaveProperty(formName);
   });
 
-  it("should populate fields from mixin options", () => {
-    // Should have field values from mixin options
+  it("should populate fields from function options", () => {
+    // Should have field values from function options
     expect(wrapper.vm[formName].fields).toEqual(fields);
-    // Should have matching initial valuse
+    // Should have matching initial values
     expect(wrapper.vm[formName]._initial).toEqual(fields);
   });
 
@@ -147,15 +150,18 @@ describe("Form Create Mixin", () => {
   });
 
   describe("should use optional mixin options", () => {
-    let wrapperStatic = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let wrapperStatic: Wrapper<Vue & { [key: string]: any }>;
 
     beforeEach(() => {
       const options = { calculateChanged: false, flags: { locked: true } };
       wrapperStatic = shallowMount(Component, {
-        mixins: [
-          // NOTE: Must spread setup values to avoid mutating by reference!
-          FormCreateMixin(formName, { ...fields }, options),
-        ],
+        // NOTE: Must spread setup values to avoid mutating by reference!
+        data() {
+          return {
+            [formName]: createForm({ ...fields }, options),
+          };
+        },
       });
     });
     afterEach(() => {
@@ -176,45 +182,5 @@ describe("Form Create Mixin", () => {
       wrapperStatic.setData({ [formName]: { fields: { ...fieldChanges } } });
       expect(wrapperStatic.vm[formName].flags.changed).toBeUndefined();
     });
-  });
-});
-
-describe("Form Create Function", () => {
-  let wrapper = null;
-
-  const formName = "form";
-  const fields = {
-    email: "test@example.com",
-    password: "******",
-  };
-
-  // Setup the component with mixin before each test
-  const beforeHandler = () => {
-    const Component = Vue.component("testComponent", {
-      template: "<div />",
-    });
-
-    wrapper = shallowMount(Component, {
-      // Form function with initial fields and custom flags
-      // NOTE: Must spread setup values to avoid mutating by reference!
-      data() {
-        return {
-          [formName]: createForm({ ...fields }),
-        };
-      },
-    });
-  };
-
-  beforeEach(beforeHandler);
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
-  // NOTE: Only this test is necessary, since the Mixin uses this function underneath!
-  it("should run mixin in component", () => {
-    // Should import successfully
-    expect(createForm).toBeTruthy();
-    // Should have form data key from mixin options
-    expect(wrapper.vm).toHaveProperty(formName);
   });
 });
