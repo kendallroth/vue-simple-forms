@@ -1,48 +1,11 @@
-export interface FormFields {
-  [name: string]: string | number | null;
-}
-
-export interface FormOptions {
-  calculateChanged?: boolean;
-  flags?: FormOptionsFlags;
-}
-
-export interface FormOptionsFlags {
-  // Necessary to allow custom flags
-  [key: string]: boolean | undefined;
-  changed?: boolean;
-  disabled?: boolean;
-  loading?: boolean;
-  submitting?: boolean;
-}
-
-export interface FormFlags {
-  // Necessary to allow referencing as 'this.flags[flag]'...
-  [key: string]: boolean | undefined;
-  changed?: boolean;
-  disabled: boolean;
-  loading: boolean;
-  submitting: boolean;
-}
-
-export interface Form {
-  flags: FormFlags;
-  fields: FormFields;
-  _initial: FormFields;
-  getValues: () => FormFields;
-  setFlag: (flag: string, value: boolean) => void;
-  setInitial: (values: FormFields) => void;
-  setLoading: (isLoading: boolean) => void;
-  setSubmitting: (isSubmitting: boolean) => void;
-  setValues: (values: FormFields, setInitial?: boolean) => void;
-  reset: () => void;
-}
+import { Form, FormFields, FormFlags, FormOptions } from "./types";
 
 /**
- * Create a Vue form
+ * Create a Vue form with reactive data and helper methods
  *
- * @param  {Object} fields  - Form fields and initial values
- * @param  {Object} options - Form configuration options
+ * @param   {FormFields}  fields  - Form fields and initial values
+ * @param   {FormOptions} options - Form configuration options
+ * @returns {Form}        Vue form
  */
 export const createForm = (fields: FormFields, options?: FormOptions): Form => {
   const { calculateChanged = true, flags } = options || {};
@@ -64,50 +27,24 @@ export const createForm = (fields: FormFields, options?: FormOptions): Form => {
     _initial: { ...fields },
     flags: formFlags,
     fields,
-    /**
-     * Get the form values
-     * @return {Object} - Form values
-     */
     getValues(): FormFields {
       return this.fields;
     },
-    /**
-     * Set a form flag
-     * @param {string}  flag  - Form flag name
-     * @param {boolean} value - Form flag value
-     */
     setFlag(flag: string, value: boolean): void {
       // Only set flags that exist or are custom!
       if (this.flags[flag] === undefined) return;
 
       this.flags[flag] = Boolean(value);
     },
-    /**
-     * Set the form current and initial values
-     * @param {Object} values - New form values
-     */
     setInitial(values: FormFields): void {
       this.setValues(values, true);
     },
-    /**
-     * Set whether the form is loading
-     * @param {boolean} isLoading - Whether form is loading
-     */
     setLoading(isLoading: boolean): void {
       this.setFlag("loading", isLoading);
     },
-    /**
-     * Set whether the form is submitting
-     * @param {boolean} isSubmitting - Whether form is submitting
-     */
     setSubmitting(isSubmitting: boolean): void {
       this.setFlag("submitting", isSubmitting);
     },
-    /**
-     * Set the form values
-     * @param {Object}  values     - New form values
-     * @param {boolean} setInitial - Whether initial values should be updated
-     */
     setValues(values: FormFields, setInitial = false): void {
       Object.keys(values).forEach((key) => {
         const fieldValue = values[key];
@@ -124,9 +61,6 @@ export const createForm = (fields: FormFields, options?: FormOptions): Form => {
         });
       }
     },
-    /**
-     * Reset the form to its initial values
-     */
     reset(): void {
       Object.keys(this._initial).forEach((key) => {
         const initialValue = this._initial[key];
