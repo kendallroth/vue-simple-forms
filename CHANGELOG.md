@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fully typed `FormGuardMixin` to replace `FormLeaveGuardMixin` (can be customized with `formGuards` data key)
 - New `setInitial` form function to set a form's initial (and current) values (similar to old behaviour of `setValues`)
 
+> **NOTE:** Some tests were disabled (`FormGuardMixin`) to get a passing build, and test coverage is broken!
+
 ## [0.2.3] - 2020-09-30
 ### Added
 - Development instructions and guide
