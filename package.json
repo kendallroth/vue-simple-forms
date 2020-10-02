@@ -5,7 +5,6 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "clean": "rimraf lib",
     "format": "prettier --write {src,test}/**/*.ts",
     "test": "npm run lint && npm run test:only",
     "test:cover": "npm run test:only -- --coverage",
@@ -13,9 +12,14 @@
     "test:only": "jest --verbose",
     "test:watch": "npm run test:only -- --watch",
     "lint": "eslint src test",
-    "build": "cross-env NODE_ENV=\"production\" tsc -p tsconfig.build.json",
-    "build:dev": "tsc -p tsconfig.build.json --watch",
-    "prepublish": "npm run clean && npm run test && npm run build"
+    "build": "npm run build:types && npm run build:js",
+    "build:clean": "rimraf lib",
+    "build:dev": "tsc -p tsconfig.dev.json --watch",
+    "build:js": "cross-env BABEL_ENV=production babel src --out-dir lib --extensions \".ts\" --source-maps inline",
+    "build:types": "tsc -p tsconfig.build.json",
+    "prepublish": "npm run build:clean && npm run test && npm run build",
+    "type-check": "tsc",
+    "type-check:watch": "npm run type-check -- --watch"
   },
   "files": [
     "lib",
@@ -39,7 +43,11 @@
   "devDependencies": {
     "@babel/cli": "^7.10.3",
     "@babel/core": "^7.10.3",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-decorators": "^7.10.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
     "@babel/preset-env": "^7.10.3",
+    "@babel/preset-typescript": "^7.10.4",
     "@babel/register": "^7.10.3",
     "@types/jest": "^26.0.14",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
@@ -47,7 +55,7 @@
     "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^26.3.0",
-    "babel-plugin-add-module-exports": "^1.0.0",
+    "babel-plugin-add-module-exports": "^1.0.4",
     "babel-polyfill": "^6.26.0",
     "babel-preset-minify": "^0.5.0",
     "cross-env": "^7.0.2",

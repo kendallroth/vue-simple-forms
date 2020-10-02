@@ -205,6 +205,10 @@ This project can be started and will automatically rebuild on file changes:
 npm run build:dev
 ```
 
+See [this link](https://www.typescriptlang.org/docs/handbook/babel-with-typescript.html) for information on using TypeScript with Babel. In summary, TypeScript is used for type checking but Babel is used for transpilation!
+
+> **NOTE:** Coverage tests are currently broken after the switch to TypeScript, and some had to be disabled!
+
 ## Miscellaneous
 
 > Project boilerplate from: [`flexdinesh/npm-module-boilerplate`](https://github.com/flexdinesh/npm-module-boilerplate)

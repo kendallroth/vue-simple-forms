@@ -8,8 +8,11 @@ import { Component, Vue } from "vue-property-decorator";
 // Types
 import { Form } from "./createForm";
 
-@Component
-export class FormGuardMixin extends Vue {
+@Component({
+  // NOTE: Necessary to avoid Vue component name issues with minified code!
+  name: "FormGuardMixin"
+})
+class FormGuardMixin extends Vue {
   // TODO: Possibly configure via router 'props'?
 
   formLeaveCallback: ((leave: boolean) => void) | null = null;
@@ -104,3 +107,5 @@ function resetForms(forms: Form[]): void {
 }
 
 /* eslint @typescript-eslint/no-use-before-define: off */
+
+export { FormGuardMixin };

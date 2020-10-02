@@ -2,8 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "emitDeclarationOnly": true,
-    "isolatedModules": true,
   },
   "exclude": ["lib", "node_modules", "test/**/*.ts"]
 }
