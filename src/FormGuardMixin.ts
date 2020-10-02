@@ -6,8 +6,14 @@
 import { Component, Vue } from "vue-property-decorator";
 
 // Types
-import { Form } from "./createForm";
+import { Form } from "./types";
 
+/**
+ * Mixin to prevent leaving a form with unsaved changes (using routing)
+ *
+ * The mixin provides several properties to assist with prompting the user
+ *   to confirm/cancel form navigation.
+ */
 @Component({
   // NOTE: Necessary to avoid Vue component name issues with minified code!
   name: "FormGuardMixin"
@@ -21,10 +27,20 @@ class FormGuardMixin extends Vue {
     return this.$data.guardedForms || [];
   }
 
+  /**
+   * Whether the form leave guard is active
+   *
+   * This can be used to control a confirmation dialog, etc...
+   */
   get isFormGuardActive(): boolean {
     return Boolean(this.formLeaveCallback);
   }
 
+  /**
+   * Set whether the form leave guard is active
+   *
+   * NOTE: This should not be set manually but as part of confirmation process!
+   */
   set isFormGuardActive(val: boolean) {
     // Can only set to inactive, since setting to "active" requires a "next()" callback!
     if (!val) {
@@ -41,6 +57,12 @@ class FormGuardMixin extends Vue {
     return false;
   }
 
+  /**
+   * Handler to determine whether the form navigation should be continued/cancelled
+   * @param shouldLeave - Whether form navigation should continue (will reset form)
+   *
+   * NOTE: This will call the previously interupted "next" route method.
+   */
   onFormLeave(shouldLeave: boolean): void {
     if (!this.formLeaveCallback) return;
 
@@ -81,6 +103,7 @@ class FormGuardMixin extends Vue {
 
 /**
  * Check whether a form has any unsaved changes
+ * @ignore
  * @param   {Object}  form - Form state
  * @returns {boolean}      - Whether form is clean
  */
@@ -95,6 +118,7 @@ function checkForms(forms: Form[]): boolean {
 
 /**
  * Reset a form
+ * @ignore
  * @param {Object} form - Form state
  */
 function resetForms(forms: Form[]): void {
