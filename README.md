@@ -4,8 +4,10 @@
 
 Simple Vue form state management library (no validation, etc).
 
-- [`FormCreateMixin`](#formcreatemixin)
-- [`FormLeaveGuardMixin`](#formleaveguardmixin)
+- [`createForm`](#createform)
+- [~~`FormCreateMixin`~~](#deprecated-formcreatemixin) (_deprecated_)
+- [`FormGuardMixin`](#formguardmixin)
+- [~~`FormLeaveGuardMixin`~~](#deprecated-formleaveguardmixin) (_deprecated_)
 
 ```sh
 npm install @kendallroth/vue-simple-forms --save
@@ -17,19 +19,23 @@ npm install @kendallroth/vue-simple-forms --save
 - Track basic form fields
 - Help prevent leaving a route with unsaved changes
 
-## `FormCreateMixin`
+## `createForm`
+
+> **NOTE:** The previous `FormCreateMixin` has been removed as it did not support TypeScript!
 
 ### Usage
 
-The `FormCreateMixin` handles creating the reactive data and flags from the field keys and initial values. The form name/key and fields (with intial values) can be specified when adding the mixin to the component.
+The `createForm` function handles creating the reactive data and flags from the field keys and initial values. The form name/key and fields (with intial values) can be specified when adding the data to the component.
 
 ```js
-import { FormCreateMixin } from "@kendallroth/vue-simple-forms";
+import { createForm } from "@kendallroth/vue-simple-forms";
 
-const fields = { email: "test@example.com", password: "********" };
+const fields = { email: "", password: "" };
 
 const vm = new Vue({
-  mixins: [FormCreateMixin("testForm", fields, { calculateChanged: false })],
+  data() {
+    testForm: createForm(fields, { calculateChanged: false }),
+  },
 });
 
 // Indicate loading
@@ -38,30 +44,31 @@ vm.data.testForm.setLoading(true);
 vm.data.testForm.setSubmitting(true);
 ```
 
-> **NOTE:** The `createForm` function is an alternative to the `FormCreateMixin` (which is preferred).
+Alternatively, TypeScript users will benefit from `vue-property-decorator` integration:
 
 ```js
-// Alternative approach
 import { createForm } from "@kendallroth/vue-simple-forms";
+import { Component, Vue } from "vue-property-decorator";
 
-const fields = { email: "", password: "" };
+@Component
+export default class Form extends Vue {
+  testForm = createForm({ ... });
 
-const vm = new Vue({
-  data() {
-    ...createForm("testForm", fields, { calculateChanged: false }),
-  },
-});
+  mounted() {
+    this.testForm.setValues({ ... });
+  }
+}
+
 ```
 
 ### API
 
 ### Config
 
-Both `FormCreateMixin` and `createForm` accept several arguments to configure the form.
+`createForm` accepts several arguments to configure the form.
 
 | Property                   | Type      | Default | Description                                            |
 | -------------------------- | --------- | ------- | ------------------------------------------------------ |
-| `name`                     | `string`  |         | Form `data` key name                                   |
 | `fields`                   | `Object`  |         | Form fields and initial values                         |
 | `options`                  | `Object`  |         | Form configuration options                             |
 | `options.calculateChanged` | `boolean` | `true`  | Whether `changed` flag is calculated (performance)     |
@@ -71,17 +78,18 @@ Both `FormCreateMixin` and `createForm` accept several arguments to configure th
 
 The `form` object (name specified by mixin options) provides a simple API, particularly the field values and form flags. There are several additional utility methods to control the flags.
 
-| Property                               | Description                                            |
-| -------------------------------------- | ------------------------------------------------------ |
-| `_initial`                             | _Initial field values_                                 |
-| `flags`                                | Form state flags                                       |
-| `fields`                               | Form field values                                      |
-| `getValues()`                          | Get form values                                        |
-| `setFlag(flag, value)`                 | Set a form flag (**only use for custom `flags`!**)     |
-| `setLoading(isLoading)`                | Set the loading flag                                   |
-| `setSubmitting(isSubmitting)`          | Set the submitting flag                                |
-| `setValues(values, setInitial = true)` | Set the form values (optionally update initial values) |
-| `reset()`                              | Reset the form to initial values                       |
+| Property                                | Description                                            |
+| --------------------------------------- | ------------------------------------------------------ |
+| `_initial`                              | _Initial field values_                                 |
+| `flags`                                 | Form state flags                                       |
+| `fields`                                | Form field values                                      |
+| `getValues()`                           | Get form values                                        |
+| `setFlag(flag, value)`                  | Set a form flag (**only use for custom `flags`!**)     |
+| `setInitial(values)`                    | Set the initial form values                            |
+| `setLoading(isLoading)`                 | Set the loading flag                                   |
+| `setSubmitting(isSubmitting)`           | Set the submitting flag                                |
+| `setValues(values, setInitial = false)` | Set the form values (update initial values by default) |
+| `reset()`                               | Reset the form to initial values                       |
 
 > **NOTE:** Included form `flags` are handled internally and should not be modified with `setFlags()` method!
 
@@ -96,62 +104,89 @@ The form flags are computed from the form state and should not be modified direc
 | `loading`    | Whether form is loading                                           | `setLoading()`    |
 | `submitting` | Whether form is submitting                                        | `setSubmitting()` |
 
-## `FormLeaveGuardMixin`
+## [DEPRECATED] `FormCreateMixin`
+
+> **NOTE:** This has been deprecated in favour of the fully typed `createForm`.
+
+## `FormGuardMixin`
 
 ### Usage
 
-The `FormLeaveGuardMixin` provides helpers to prevent leaving a form (managed by `FormCreateMixin`) with unsaved data. These helpers can be utilized by the component to allow the user to handle the route change or cancellation based on the provided properties. The mixin checks the `changed` flag of a form (or forms) created by the `FormCreateMixin`.
+The `FormGuardMixin` provides helpers to prevent leaving a form (managed by `createForm`) with unsaved data. These helpers can be utilized by the component to allow the user to handle the route change or cancellation based on the provided properties. The mixin checks the `changed` flag of a form (or forms) created by the `createForm`.
 
 ```js
-import { FormLeaveGuardMixin } from "@kendallroth/vue-simple-forms";
+import { createForm, FormGuardMixin } from "@kendallroth/vue-simple-forms";
 
 const vm = new Vue({
-  mixins: [
-    FormLeaveGuardMixin("testForm", {
-      activeKey: "isLeavingForm",
-      callbackKey: "formLeaveCallback",
-      onlyPrevent: false, // Would render "activeKey" useless
-      // onPrevent: (callback) => Vuex.commit("SHOW_ROUTE_LEAVE", { callback })
-    }),
-  ],
-  // mixins: [FormLeaveGuardMixin(["testForm", "anotherForm")],
+  data() {
+    sampleForm: createForm(...),
+    formGuards: [this.sampleForm],
+  },
+  mixins: [FormLeaveGuardMixin],
   template: `
     <template>
       <ConfirmDialog
-        v-if="isLeavingForm"
-        @confirm="formLeaveCallback(true)"
-        @cancel="formLeaveCallback(false)"
+        v-if="isFormGuardActive"
+        text="Are you sure? There are unsaved changes!"
+        @confirm="onFormLeave(true)"
+        @cancel="onFormLeave(false)"
       />
     </template>
   `,
 });
 ```
 
+Alternatively, TypeScript users will benefit from `vue-property-decorator` integration:
+
+```js
+import { createForm, FormGuardMixin } from "@kendallroth/vue-simple-forms";
+import { Component, Mixins } from "vue-property-decorator";
+
+@Component({
+  template: `
+    <template>
+      <ConfirmDialog
+        v-if="isFormGuardActive"
+        text="Are you sure? There are unsaved changes!"
+        @confirm="onFormLeave(true)"
+        @cancel="onFormLeave(false)"
+      />
+    </template>
+  `,
+})
+export default class Form extends Mixins(FormGuardMixin) {
+  testForm = createForm({ ... });
+  formGards = [this.testForm]
+
+  mounted() {
+    this.testForm.setValues({ ... });
+  }
+}
+
+```
+
 ### API
 
 ### Config
 
-`FormLeaveGuardMixin` accepts several arguments to configure the form.
+`FormGuardMixin` accepts a configuration `data` variable.
 
-| Property                      | Type              | Default             | Description                                                   |
-| ----------------------------- | ----------------- | ------------------- | ------------------------------------------------------------- |
-| `formNames`                   | `string|string[]` |                     | Form `data` key name                                          |
-| `options`                     | `Object`          | `{}`                | Form configuration options                                    |
-| `options.activeKey`           | `string`          | `isLeaveFormActive` | Key name to indicate when form leave guard is active          |
-| `options.callbackKey`         | `string`          | `formLeaveCallback` | Key name for route leave confirmation callback                |
-| `options.onlyPrevent`         | `boolean`         | `false`             | Whether to only prevent leaving form ("activeKey" is useless) |
-| `options.onPrevent(callback)` | `function`        | `() => {}`          | Custom prevention handler (ie. for handling with Vuex, etc)   |
+| Property     | Type     | Description                          |
+| ------------ | -------- | ------------------------------------ |
+| `formGuards` | `Form[]` | Form objects created by `createForm` |
 
 ### Mixin Data
 
-The `FormLeaveGuardMixin` provides a computed property to control a confirmation dialog (or other form) and a callback to handle leaving or remaining at the form.
+The `FormGuardMixin` provides a computed property to control a confirmation dialog (or other form) and a callback to handle leaving or remaining at the form.
 
-| Property                           | Description                                        |
-| ---------------------------------- | -------------------------------------------------- |
-| `isLeaveFormActive`\*              | Whether the leave route protection is active/shown |
-| `formLeaveCallback(shouldLeave)`\* | Confirmation callback (from dialog, etc)           |
+| Property                   | Description                                        |
+| -------------------------- | -------------------------------------------------- |
+| `isFormGuardActive`        | Whether the leave route protection is active/shown |
+| `onFormLeave(shouldLeave)` | Confirmation callback (from dialog, etc)           |
 
-> **NOTE:** Since these API names can be configured, use the appropriate names from the mixin constructor.
+## [DEPRECATED] `FormLeaveGuardMixin`
+
+> **NOTE:** This has been deprecated in favour of the fully typed `FormGuardMixin`.
 
 ## Development
 
@@ -169,6 +204,10 @@ This project can be started and will automatically rebuild on file changes:
 ```sh
 npm run build:dev
 ```
+
+See [this link](https://www.typescriptlang.org/docs/handbook/babel-with-typescript.html) for information on using TypeScript with Babel. In summary, TypeScript is used for type checking but Babel is used for transpilation!
+
+> **NOTE:** Coverage tests are currently broken after the switch to TypeScript, and some had to be disabled!
 
 ## Miscellaneous
 

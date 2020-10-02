@@ -1,19 +1,25 @@
 module.exports = {
-  parser: "babel-eslint",
-  extends: "eslint:recommended",
+  parser: "@typescript-eslint/parser",
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "prettier/@typescript-eslint",
+  ],
+  plugins: ["@typescript-eslint"],
   env: {
     jest: true,
     node: true,
   },
   rules: {
-    "comma-dangle": ["warn", "always-multiline"],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "no-console": "warn",
     "no-tabs": "warn",
     "no-trailing-spaces": "warn",
-    "no-unused-vars": "error",
+    "no-unused-vars": "warn",
     "no-unreachable": "error",
     "prefer-const": "warn",
     "prefer-destructuring": "warn",
-    quotes: ["warn", "double"],
-    semi: ["warn", "always"],
   },
 };

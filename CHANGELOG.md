@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.3.0] - 2020-10-01
+### Removed
+- Removed the `FormCreateMixin` (replaced with typed `createForm` function)
+  - _The `FormCreaetMixin` (not truly a mixin...) did not work with TypeScript_
+  - _The old mixin simply called this function anyway..._
+- Removed the `FormLeaveGuardMixin` (replaced with typed `FormGuardMixin`)
+  - _The `FormLeaveGuardMixin` (not truly a mixin...) did not work with TypeScript_
+  - _There was no need for customizing the leave guard to the extend provided_
+- Removed the form key/name from the `createForm` function API
+  - _This was an unnecessary step that caused more internal work for no gain (simply assign to data)_
+
+### Changed
+- Changed the default behaviour of the `setValues` form function (now will not set initial values by default)
+  - _This change was made to align with developer expectations (behaviour moved to `setInitial`)_
+
+### Added
+- Overhauled package to use [TypeScript](https://typescriptlang.org)!
+- Fully typed `FormGuardMixin` to replace `FormLeaveGuardMixin` (can be customized with `formGuards` data key)
+- New `setInitial` form function to set a form's initial (and current) values (similar to old behaviour of `setValues`)
+
 ## [0.2.3] - 2020-09-30
 ### Added
 - Development instructions and guide

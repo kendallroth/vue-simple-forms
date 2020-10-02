@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "ES5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "outDir": "./lib",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+  },
+  "baseUrl": "./",
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["lib", "node_modules"]
+}
