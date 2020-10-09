@@ -2,7 +2,14 @@
  * Form field values
  */
 export interface FormFields {
-  [name: string]: string | number | null;
+  [name: string]:
+    | string
+    | number
+    | boolean
+    | string[]
+    | number[]
+    | boolean[]
+    | null;
 }
 
 /**
