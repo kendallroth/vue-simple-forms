@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.3.2] - 2020-10-09
+### Fixed
+- Improved support for form fields types
+  - Added `boolean`, `string[]`, `number[]`, and `boolean[]`
+
 ## [0.3.1] - 2020-10-02
 ### Added
 - Improved type exports (`/types`)
