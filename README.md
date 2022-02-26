@@ -4,6 +4,8 @@
 
 Simple Vue form state management library (no validation, etc).
 
+> **NOTE:** With the release of Vue 3 and libraries like [VeeValidate](https://vee-validate.logaretm.com/v4/guide/overview), this library will no longer be maintained (2022-02-26).
+
 - [`createForm`](#createform)
 - [~~`FormCreateMixin`~~](#deprecated-formcreatemixin) (_deprecated_)
 - [`FormGuardMixin`](#formguardmixin)
